@@ -10,7 +10,7 @@ import nltk
 
 # Paths of importance
 stopwords_path = 'C:/Users/USUARIO DELL/Documents/Python Scripts/PROCESAMIENTO_LENGUAJE_NATURAL/Normalization/nlp_functions/stopwords_and_lemmas/stopwords_es.txt'
-
+lemmas_path = 'C:/Users/USUARIO DELL/Documents/Python Scripts/PROCESAMIENTO_LENGUAJE_NATURAL/Normalization/nlp_functions/stopwords_and_lemmas/generate.txt'
 
 def clean_corpus(path_origin, path_destiny):
     """
@@ -116,3 +116,56 @@ def delete_stop_words_sents(sents, path = stopwords_path):
     return clean_sents
 
 
+def lemmatize(text, path = lemmas_path):
+    """
+        Here you can lemmatize your words.
+        words: your words free of stop words.
+        path: the path where are the lemmas you want.
+    """
+    lemmas = dict()
+    with open(path, encoding = 'latin-1') as file:
+        lines = file.readlines()
+        lines = [w.strip() for w in lines]
+        for line in lines:
+            line = line.strip()
+            if line != '':
+                words = line.split()
+                token = words[0].strip()
+                token = token.replace('#', '')
+                lemma = words[-1].strip()
+                lemmas[token] = lemma
+    lemmatized_text = []
+    for word in text:
+        if word in lemmas.keys():
+            lemmatized_text.append(lemmas[word])
+        else:
+            lemmatized_text.append(word)
+    return lemmatized_text
+
+
+def lemmatize_sents(text, path = lemmas_path):
+    """
+        Here you can lemmatize your sents.
+        words: your sents free of stop words.
+        path: the path where are the lemmas you want.
+    """
+    lemmas_sents = list()
+    count = 1
+    for sent in text:
+        words = sent.split()
+        lemmas_sent = lemmatize(words, path)
+        lemmas_sent = ' '.join(lemmas_sent)
+        print(f'sent: {count}')
+        if lemmas_sent != '':
+            lemmas_sents.append(lemmas_sent)
+        count = count + 1
+    return lemmas_sents
+
+
+def get_vocabulary(words):
+    """
+        Here you can get the vocabulary of your words.
+        words: list of words.
+    """
+    vocabulary = list(sorted(set(words)))
+    return vocabulary
