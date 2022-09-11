@@ -8,6 +8,10 @@ from bs4 import BeautifulSoup
 import re
 import nltk
 
+# Paths of importance
+stopwords_path = 'C:/Users/USUARIO DELL/Documents/Python Scripts/PROCESAMIENTO_LENGUAJE_NATURAL/Normalization/nlp_functions/stopwords_and_lemmas/stopwords_es.txt'
+
+
 def clean_corpus(path_origin, path_destiny):
     """
         Here, you can clean your corpus, so if you can get
@@ -34,10 +38,22 @@ def clean_corpus(path_origin, path_destiny):
         file.write(clean_text)
 
 
+def get_clean_text(path):
+    """
+        You can get the clean text without tags.
+        path: the path of you clean text.
+    """
+    # Read file
+    text = ''
+    with open(path, encoding = 'utf-8') as file:
+        text = file.read()
+    return text
+
+
 def word_tokenize(text):
     """
         Here you can tokenize yor clean corpus by words.
-        text: the text you want to tokenize
+        text: the text you want to tokenize.
     """
     words = text.split()
     # Get only alphabetic words
@@ -54,22 +70,10 @@ def word_tokenize(text):
     return alphabetic_words
 
 
-def get_clean_text(path):
-    """
-        You can get the clean text without tags
-        path: the path of you clean text
-    """
-    # Read file
-    text = ''
-    with open(path, encoding = 'utf-8') as file:
-        text = file.read()
-    return text
-
-
 def sentence_tokenize(text):
     """
         Here you can tokenize yor clean corpus by words.
-        text: the text you want to tokenize
+        text: the text you want to tokenize.
     """
     tokens = nltk.data.load("tokenizers/punkt/spanish.pickle") 
     sents = tokens.tokenize(text)
@@ -79,19 +83,36 @@ def sentence_tokenize(text):
         sent_token = " ".join(sent_token)
         if sent_token != '':
             alphabetic_sents.append(sent_token)
-        # words = sent.split()
-        # for word in words:
-        #     token = list()
-        #     for character in word:
-        #         if re.match(r'^[a-záéíóúñü+$]', character):
-        #             token.append(character)
-        #     token = ''.join(token)
-        #     if token != '':
-        #         sent_token.append(token)
-        # sent_token = " ".join(sent_token)
-        # if sent_token != '':
-        #     alphabetic_sents.append(sent_token)
-
     return alphabetic_sents
+
+
+def delete_stop_words(words, path = stopwords_path):
+    """
+        Here you can delete the stop words.
+        words: the words you want to clean.
+        path: the path of you stopwords file.
+    """
+    # Read the stop words
+    with open(path, encoding = 'utf-8') as file:
+        stop_words = file.readlines()
+        stop_words = [w.strip() for w in stop_words]
+    clean_words = [word for word in words if word not in stop_words]
+    return clean_words
+
+
+def delete_stop_words_sents(sents, path = stopwords_path):
+    """
+        Here you can delete the stop words from your sents.
+        sents: the sents you want to clean.
+        path: the path of you stopwords file.
+    """
+    clean_sents = list()
+    for sent in sents:
+        words = sent.split()
+        clean_sent = delete_stop_words(words, path)
+        clean_sent = ' '.join(clean_sent)
+        if clean_sent != '':
+            clean_sents.append(clean_sent)
+    return clean_sents
 
 
