@@ -34,15 +34,11 @@ def clean_corpus(path_origin, path_destiny):
         file.write(clean_text)
 
 
-def word_tokenize(path):
+def word_tokenize(text):
     """
         Here you can tokenize yor clean corpus by words.
-        path: the path of your clean corpus
+        text: the text you want to tokenize
     """
-    # Read the file
-    text = ''
-    with open(path, encoding = 'utf-8') as file:
-        text = file.read()
     words = text.split()
     # Get only alphabetic words
     alphabetic_words = list()
@@ -58,43 +54,41 @@ def word_tokenize(path):
     return alphabetic_words
 
 
-def sentence_tokenize(path):
+def get_clean_text(path):
     """
-        Here you can tokenize yor clean corpus by words.
-        path: the path of your clean corpus 
+        You can get the clean text without tags
+        path: the path of you clean text
     """
-    # Read the file
+    # Read file
     text = ''
     with open(path, encoding = 'utf-8') as file:
-        text = file.read() 
+        text = file.read()
+    return text
+
+
+def sentence_tokenize(text):
+    """
+        Here you can tokenize yor clean corpus by words.
+        text: the text you want to tokenize
+    """
     tokens = nltk.data.load("tokenizers/punkt/spanish.pickle") 
     sents = tokens.tokenize(text)
     alphabetic_sents = list()
     for sent in sents:
-        sent_token = list()
-        words = sent.split()
-        for word in words:
-            token = list()
-            for character in word:
-                if re.match(r'^[a-záéíóúñü+$]', character):
-                    token.append(character)
-            token = ''.join(token)
-            if token != '':
-                sent_token.append(token)
+        sent_token = word_tokenize(sent)
         sent_token = " ".join(sent_token)
         if sent_token != '':
             alphabetic_sents.append(sent_token)
-
-
-
+        # words = sent.split()
         # for word in words:
         #     token = list()
         #     for character in word:
         #         if re.match(r'^[a-záéíóúñü+$]', character):
         #             token.append(character)
-        #         token = ''.join(character)
-        #         if token != '':
-        #             sent_token = token.join(' ')
+        #     token = ''.join(token)
+        #     if token != '':
+        #         sent_token.append(token)
+        # sent_token = " ".join(sent_token)
         # if sent_token != '':
         #     alphabetic_sents.append(sent_token)
 
