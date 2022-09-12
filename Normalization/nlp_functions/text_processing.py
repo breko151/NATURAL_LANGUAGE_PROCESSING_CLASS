@@ -106,10 +106,13 @@ def delete_stop_words_sents(sents, path = stopwords_path):
         sents: the sents you want to clean.
         path: the path of you stopwords file.
     """
+    with open(path, encoding = 'utf-8') as file:
+        stop_words = file.readlines()
+        stop_words = [w.strip() for w in stop_words]    
     clean_sents = list()
     for sent in sents:
         words = sent.split()
-        clean_sent = delete_stop_words(words, path)
+        clean_sent = [word for word in words if word not in stop_words]
         clean_sent = ' '.join(clean_sent)
         if clean_sent != '':
             clean_sents.append(clean_sent)
@@ -134,7 +137,7 @@ def lemmatize(text, path = lemmas_path):
                 token = token.replace('#', '')
                 lemma = words[-1].strip()
                 lemmas[token] = lemma
-    lemmatized_text = []
+    lemmatized_text = list()
     for word in text:
         if word in lemmas.keys():
             lemmatized_text.append(lemmas[word])
@@ -149,16 +152,30 @@ def lemmatize_sents(text, path = lemmas_path):
         words: your sents free of stop words.
         path: the path where are the lemmas you want.
     """
+    lemmas = dict()
+    with open(path, encoding = 'latin-1') as file:
+        lines = file.readlines()
+        lines = [w.strip() for w in lines]
+        for line in lines:
+            line = line.strip()
+            if line != '':
+                words = line.split()
+                token = words[0].strip()
+                token = token.replace('#', '')
+                lemma = words[-1].strip()
+                lemmas[token] = lemma
     lemmas_sents = list()
-    count = 1
     for sent in text:
         words = sent.split()
-        lemmas_sent = lemmatize(words, path)
+        lemmas_sent = list()
+        for word in words:
+            if word in lemmas.keys():
+                lemmas_sent.append(lemmas[word])
+            else:
+                lemmas_sent.append(word)
         lemmas_sent = ' '.join(lemmas_sent)
-        print(f'sent: {count}')
         if lemmas_sent != '':
             lemmas_sents.append(lemmas_sent)
-        count = count + 1
     return lemmas_sents
 
 
