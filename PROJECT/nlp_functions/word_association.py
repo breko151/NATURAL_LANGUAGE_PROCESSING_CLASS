@@ -57,7 +57,7 @@ def get_contexts_sents(vocabulary, text, window = 8):
     return contexts
 
 
-def get_probabilities(vocabulary, contexts):
+def get_vectors(vocabulary, contexts, prob = False):
     """
         Here you can create a vector space for the words of your vocabulary.
         vocabulary: unique words.
@@ -70,9 +70,10 @@ def get_probabilities(vocabulary, contexts):
         for voc in vocabulary:
             vector.append(context.count(voc))
         vector = np.array(vector)
-        s = np.sum(vector)
-        if s != 0:
-            vector = vector / s
+        if prob:
+            s = np.sum(vector)
+            if s != 0:
+                vector = vector / s
         vectors[v] = vector
     return vectors
 
@@ -105,7 +106,10 @@ def s_cosine(word, vectors, aux_path = ''):
     v = vectors[word]
     for w in vectors.keys():
         v2 = vectors[w]
-        similarities[w] = np.dot(v, v2) / np.linalg.norm(v) * np.linalg.norm(v2)
+        if np.linalg.norm(v) == 0 or np.linalg.norm(v2) == 0:
+            similarities[w] = 0
+        else:
+            similarities[w] = np.dot(v, v2) / (np.linalg.norm(v) * np.linalg.norm(v2))
     similarities = (sorted(similarities.items(), key = lambda item: item[1], reverse = True))
     with open('./cosine/similar_to_' + word + aux_path + '.txt', 'w', encoding = 'utf-8') as f:
         for item in similarities:
