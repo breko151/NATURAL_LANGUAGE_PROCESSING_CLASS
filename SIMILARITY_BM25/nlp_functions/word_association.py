@@ -119,7 +119,7 @@ def s_bm25(word, idf, vectors, aux_path = ''):
     similarities = dict()
     v = np.multiply(idf, vectors[word])
     for w in vectors.keys():
-        v2 = np.multiply(idf, vectors[w])
+        v2 = vectors[w]
         similarities[w] = np.dot(v, v2)
     similarities = (sorted(similarities.items(), key = lambda item: item[1], reverse = True))
     with open('./bm25/similar_to_' + word[0] + aux_path + '.txt', 'w', encoding = 'utf-8') as f:
@@ -199,7 +199,6 @@ def similar_words_better(word, vectors, idf, vocabulary, aux_path = '', tf_idf =
         cosines: boolean, if you want to get similarities by this method.
         tf_idf: boolean, if you want to get similarities by this method.
     """   
-    idf = get_idf(vectors)
     words = list()
     for v in vocabulary:
         if v[0] == word:
