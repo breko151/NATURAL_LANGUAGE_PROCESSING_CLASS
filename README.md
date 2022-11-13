@@ -1,3 +1,3 @@
-# Procesamiento de Lenguaje Natural
+# Natural Language Processing
 
-Los ejercicios vistos en clase están en la carpeta BOOK_EXAMPLES y tienen la fecha de cuando se realizo.
+You can get the programs in the respective carpet for each topic of Natural Language Processing
