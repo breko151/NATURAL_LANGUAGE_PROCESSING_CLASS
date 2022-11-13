@@ -72,7 +72,7 @@ def word_tokenize(text):
     # Return tokens
     return alphabetic_words
 
-# Modificada
+
 def sentence_tokenize(text):
     """
         Here you can tokenize yor clean corpus by words.
@@ -87,20 +87,6 @@ def sentence_tokenize(text):
     return alphabetic_sents
 
 
-def delete_stop_words(words, path = stopwords_path):
-    """
-        Here you can delete the stop words.
-        words: the words you want to clean.
-        path: the path of you stopwords file.
-    """
-    # Read the stop words
-    with open(path, encoding = 'utf-8') as file:
-        stop_words = file.readlines()
-        stop_words = [w.strip() for w in stop_words]
-    clean_words = [word for word in words if word not in stop_words]
-    return clean_words
-
-# Modificada
 def delete_stop_words_sents(sents, path = stopwords_path):
     """
         Here you can delete the stop words from your sents.
@@ -117,33 +103,6 @@ def delete_stop_words_sents(sents, path = stopwords_path):
     return clean_sents
 
 
-def lemmatize(text, path = lemmas_path):
-    """
-        Here you can lemmatize your words.
-        words: your words free of stop words.
-        path: the path where are the lemmas you want.
-    """
-    lemmas = dict()
-    with open(path, encoding = 'latin-1') as file:
-        lines = file.readlines()
-        lines = [w.strip() for w in lines]
-        for line in lines:
-            line = line.strip()
-            if line != '':
-                words = line.split()
-                token = words[0].strip()
-                token = token.replace('#', '')
-                lemma = words[-1].strip()
-                lemmas[token] = lemma
-    lemmatized_text = list()
-    for word in text:
-        if word in lemmas.keys():
-            lemmatized_text.append(lemmas[word])
-        else:
-            lemmatized_text.append(word)
-    return lemmatized_text
-
-# Modificada
 def lemmatize_sents(sents, path = lemmas_path):
     """
         Here you can lemmatize your sents.
@@ -176,15 +135,20 @@ def lemmatize_sents(sents, path = lemmas_path):
     return lemmas_sents
 
 
-def get_vocabulary(words):
+def get_vocabulary_by_sents(sents):
     """
-        Here you can get the vocabulary of your words.
-        words: list of words.
+        Here you can get the vocabulary of your sents.
+        sents: list of sents.
     """
+    words = list()
+    for sent in sents:
+        for word in sent:
+            words.append(word)
     vocabulary = list(sorted(set(words)))
+    print("Vocabulary size:", len(vocabulary))
     return vocabulary
 
-# Nueva
+
 def make_and_save_spanish_tagger(fname):
 
     tags_sents = list()
@@ -197,13 +161,15 @@ def make_and_save_spanish_tagger(fname):
     default_tagger = nltk.DefaultTagger(most_used_tag_sents)
 
     patterns = [
-        (r'.o$', 'n'),
-        (r'.os$', 'n'),
-        (r'.a$', 'n'),
-        (r'.as$', 'n'),
-        (r'.e$', 'n'),
-        (r'.es$', 'n'),
-        (r'.^[0-9]+$', 'z')
+        (r'.*o$', 'n'),
+        (r'.*os$', 'n'),
+        (r'.*a$', 'n'),
+        (r'.*as$', 'n'),
+        (r'.*e$', 'n'),
+        (r'.*es$', 'n'),
+        (r'.^[0-9]+$', 'z'),
+        (r'pixar', 'n'),
+        (r'.*net', 'n') 
     ]
 
     regexp_tagger = nltk.RegexpTagger(patterns, backoff = default_tagger)
@@ -215,7 +181,7 @@ def make_and_save_spanish_tagger(fname):
     dump(spanish_tagger, output, -1)
     output.close() 
     
-# Nueva    
+    
 def tag(sents, path = spanish_tagger):
     input_f = open(path, 'rb')
     tagger = load(input_f)

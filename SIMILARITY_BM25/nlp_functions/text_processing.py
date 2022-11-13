@@ -135,7 +135,7 @@ def lemmatize_sents(sents, path = lemmas_path):
 
 def get_vocabulary_by_sents(sents):
     """
-        Here you can get the vocabulary of yout sents.
+        Here you can get the vocabulary of your sents.
         sents: list of sents.
     """
     words = list()
