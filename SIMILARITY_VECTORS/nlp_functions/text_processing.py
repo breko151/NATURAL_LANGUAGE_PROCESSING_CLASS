@@ -12,7 +12,8 @@ import nltk
 stopwords_path = 'C:/Users/USUARIO DELL/Documents/Python Scripts/PROCESAMIENTO_LENGUAJE_NATURAL/SIMILARITY_VECTORS/nlp_functions/stopwords_and_lemmas/stopwords_es.txt'
 lemmas_path = 'C:/Users/USUARIO DELL/Documents/Python Scripts/PROCESAMIENTO_LENGUAJE_NATURAL/SIMILARITY_VECTORS/nlp_functions/stopwords_and_lemmas/generate.txt'
 
-def clean_corpus(path_origin, path_destiny):
+
+def clean_corpus(path_origin, path_destiny, no_page = 0):
     """
         Here, you can clean your corpus, so if you can get
         a text free HTML tags and save the corpus in an unique 
@@ -24,17 +25,15 @@ def clean_corpus(path_origin, path_destiny):
     file_list = corpus.fileids()
     all_text = ''
     # Get all text of the corpus
-    for file in file_list:
-        with open(path_origin + file, encoding = 'utf-8') as rfile:
-            text = rfile.read()
-            all_text += text
+    with open(path_origin + file_list[no_page], encoding = 'utf-8') as rfile:
+        all_text = rfile.read()
     # Remove HTML tags
     soup = BeautifulSoup(all_text, 'lxml')
     clean_text = soup.get_text()
     # Apply the function lower to the text
     clean_text = clean_text.lower()
     # Save the file
-    with open(path_destiny + 'clean_corpus.txt', 'w', encoding = 'utf-8') as file:
+    with open(path_destiny + 'clean_' + file_list[no_page][:11] + '_corpus.txt', 'w', encoding = 'utf-8') as file:
         file.write(clean_text)
 
 
