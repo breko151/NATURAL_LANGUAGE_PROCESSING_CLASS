@@ -30,7 +30,7 @@ def get_contexts(vocabulary, text, window = 8):
         contexts[w] = context
     return contexts
 
-# Modificada
+
 def get_contexts_sents(vocabulary, sents, window = 8):
     """
         Here you can get the context of certain word of your setences.
@@ -55,7 +55,7 @@ def get_contexts_sents(vocabulary, sents, window = 8):
         contexts[w] = context
     return contexts
 
-# Usada
+
 def get_vectors(vocabulary, contexts, prob = False):
     """
         Here you can create a vector space for the words of your vocabulary.
@@ -76,7 +76,7 @@ def get_vectors(vocabulary, contexts, prob = False):
         vectors[v] = vector
     return vectors
 
-# Usada
+
 def s_dot_product(word, vectors, aux_path = ''):
     """
         Here you can get the similaritie of each word.
@@ -89,11 +89,11 @@ def s_dot_product(word, vectors, aux_path = ''):
     for w in vectors.keys():
         similarities[w] = np.dot(vectors[w], v)
     similarities = (sorted(similarities.items(), key = lambda item: item[1], reverse = True))
-    with open('./dot_product/similar_to_' + word[0] + aux_path + '.txt', 'w', encoding = 'utf-8') as f:
+    with open('./dot_product/similar_to_' + word[0] + '_'+ word[1] + aux_path + '.txt', 'w', encoding = 'utf-8') as f:
         for item in similarities:
             f.write(str(item) + '\n')
 
-# Usada
+
 def s_cosine(word, vectors, aux_path = ''):
     """
         Here you can get the similaritie of each word.
@@ -110,12 +110,12 @@ def s_cosine(word, vectors, aux_path = ''):
         else:
             similarities[w] = np.dot(v, v2) / (np.linalg.norm(v) * np.linalg.norm(v2))
     similarities = (sorted(similarities.items(), key = lambda item: item[1], reverse = True))
-    with open('./cosine/similar_to_' + word[0] + aux_path + '.txt', 'w', encoding = 'utf-8') as f:
+    with open('./cosine/similar_to_' + word[0] + '_'+ word[1] + aux_path + '.txt', 'w', encoding = 'utf-8') as f:
         for item in similarities:
             f.write(str(item) + '\n')
 
-# Modificada
-def similar_words(word, vectors, aux_path = '', tf_idf = False, dot_product = False, cosine = False):   
+
+def similar_words(word, vectors, vocabulary, aux_path = '', tf_idf = False, dot_product = False, cosine = False):   
     """
         The Pipline to get similarities.
         word: the word you want to get similaritie.
@@ -125,18 +125,18 @@ def similar_words(word, vectors, aux_path = '', tf_idf = False, dot_product = Fa
         cosines: boolean, if you want to get similarities by this method.
         tf_idf: boolean, if you want to get similarities by this method.
     """   
-    tag = word[1]
-    new_vectors = dict()
-    for k, v in vectors.items():
-        if k[1] == tag:
-            new_vectors[k] = v
-    if dot_product:
-        s_dot_product(word, new_vectors, aux_path)
-                
-    if cosine:
-        s_cosine(word, new_vectors, aux_path)
+    words = list()
+    for v in vocabulary:
+        if v[0] == word:
+            words.append(v)
+    for word in words:
+        tag = word[1]
+        if dot_product:
+            s_dot_product(word, vectors, aux_path)
+        if cosine:
+            s_cosine(word, vectors, aux_path)
         
-# Nueva
+
 def similar_words_better(word, vectors, vocabulary, aux_path = '', tf_idf = False, dot_product = False, cosine = False):   
     """
         The Pipline to get similarities.
@@ -159,6 +159,5 @@ def similar_words_better(word, vectors, vocabulary, aux_path = '', tf_idf = Fals
                 new_vectors[k] = v
         if dot_product:
             s_dot_product(word, new_vectors, aux_path)
-
         if cosine:
             s_cosine(word, new_vectors, aux_path)
