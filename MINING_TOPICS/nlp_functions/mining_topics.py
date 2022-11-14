@@ -48,3 +48,30 @@ def get_most_freq_words_tf_idf(idf, freq, vocabulary):
         for item in tokens:
             f.write(str(item) + '\n')
     return tokens
+
+
+def get_distribution(titles, articles, topics):
+    distribution_in_articles = dict()
+    for n in range(len(titles)):
+        distribution_in_articles[titles[n]] = get_freq(topics, articles[n])
+    return distribution_in_articles
+
+
+def get_freq(topics, article):
+    freq = dict()
+    for word in topics:
+        freq[word] = 0
+    for sent in article:
+        for word in topics:
+            if word in sent:
+                freq[word] += 1
+    pis = dict()
+    sum = 0
+    for v in freq.values():
+        sum += v
+    for k, v in freq.items():
+        if sum != 0:
+            pis[k] = v / sum
+        else:
+            pis[k] = 0
+    return pis
